@@ -13,7 +13,6 @@ Se considera un tablero de tamaño NxN. Se desea colocar fichas en el tablero de
 % Nota: Usa el predicado binario p/2 con el significado p(X,Y) = hay una ficha en la fila X, columna Y del tablero.
 
 #const n=5.
-tablero(X, Y):- X=1..n, Y=1..n.
 % 1) Cada fila del tablero contiene, exactamente, 2 fichas.
 % 2) Cada columna del tablero contiene, exactamente, 2 fichas.
 % 3) Tanto la diagonal principal como la secundaria están vacías.
@@ -23,8 +22,17 @@ tablero(X, Y):- X=1..n, Y=1..n.
 2{p(1, Y) : celdas_disponibles(1, Y)}2.
 2{p(n, Y) : p(1, Y)}2.
 
-2{p(X, Y) : celdas_disponibles(X, Y), not p(1, Y)}2:- X=2..(n-1).
+% Generar todas las combinaciones para las columnas, excluyendo las ya definidas.
+% 2{q(X, Y) : celdas_disponibles(X, Y), not p(X, Y)}.
 
+% Tomar solo 2 por cada Y.
+% 2{p(X, Y) : q(X, Y)}2 :- X=2..(n - 1).
+
+1{p(X, Y) : celdas_disponibles(X, Y), Y=1..n}n:- X=1..n.
+% :- p(X, Y), P(X - 1, Y).
+% p(X, Y):- celdas_disponibles(X, Y), not p(1, X), X=2..(n-1).
+
+% Definicion de los espacios no ocupables (libres)
 diagonal_p(X, Y):- X=1..n, Y=X.
 diagonal_s(X, Y):- X=1..n, Y=(n + 1) - X.
 
@@ -32,7 +40,6 @@ diagonal_vacia(X, Y):- diagonal_p(X, Y).
 diagonal_vacia(X, Y):- diagonal_s(X, Y).
 
 celdas_disponibles(X, Y):- X=1..n,Y=1..n, not diagonal_vacia(X, Y).
-
 
 
 % #show fichas_filas/2.
