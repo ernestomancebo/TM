@@ -30,10 +30,11 @@ desempleado(X):- adulto(X), -trabaja(X).
 
 % Los jubilados son adultos que, por regla general, no trabajan.
 adulto(X):- jubilado(X).
+
 -trabaja(X):- jubilado(X), not ab(jubilado(X)).
 
 % Ahora bien, los jubilados nacidos en Aragón pueden obtener un permiso especial de su Comunidad Autónoma que les permite trabajar.
-ab(jubilado(X)):- jubilado(X), nacido_en(aragon, X), not -trabaja(X).
+ab(jubilado(X)):- nacido_en(aragon, X), trabaja(X).
 
 % Juan y Berta son adultos no estudiantes. Juan no trabaja.
 adulto(berta).
@@ -60,11 +61,16 @@ nacido_en(galicia, fede).
 jubilado(norberto).
 nacido_en(aragon, norberto).
 
+% DESCOMENTAR ESTO PARA CONFIRMAR SI TRABAJA O NO NORBERTO.
+
+% trabaja(norberto).
+
 % María es una preciosa niña.
 infante(maria).
 
 % B) De acuerdo al programa, ¿qué personas trabajan y cuáles no?
 #show trabaja/1.
+#show desempleado/1.
 
 %*
 C) Supongamos ahora que tenemos información completa sobre los predicados
@@ -73,4 +79,23 @@ Añade reglas que modelen esta hipótesis. ¿Qué responde ahora el programa sob
 -----------------------------------------------------------------
 *%
 
-#show desempleado/1.
+% #show desempleado/1.
+
+%*
+Para este problema nos da dos posibles soluciones, donde puede que trabaje o no Norberto pues no tenemos constancia de si tiene un permiso especial o no. Es algo que desconoce la base de conocimientos hasta el momento. Sin embargo, si se explicíta que tiene o no trabajo, pues la respuesta es una sola.
+
+$ clingo 0 p1.lp 
+clingo version 4.5.4
+Reading from p1.lp
+Solving...
+Answer: 1
+desempleado(juan) desempleado(kate) desempleado(pedro) desempleado(fede) desempleado(norberto) trabaja(berta) trabaja(jim)
+Answer: 2
+desempleado(juan) desempleado(kate) desempleado(pedro) desempleado(fede) trabaja(berta) trabaja(jim) trabaja(norberto)
+SATISFIABLE
+
+Models       : 2
+Calls        : 1
+Time         : 0.026s (Solving: 0.02s 1st Model: 0.00s Unsat: 0.01s)
+CPU Time     : 0.000s
+*%
